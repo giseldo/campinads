@@ -1,7 +1,6 @@
 from dash import Dash, html, dcc, Input, Output, State, dash_table
 import plotly.express as px
 import pandas as pd
-from PIL import Image
 import numpy as np
 import os
 import pysd
