@@ -11,7 +11,11 @@ from urllib.parse import quote as urlquote
 from docx2python import docx2python
 import docx2txt
 
-app = Dash(__name__)
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = Dash(__name__, external_stylesheets=external_stylesheets)
+
+server = app.server
 
 img_name = app.get_asset_url("ds.png")
 
@@ -186,5 +190,4 @@ def update_output(uploaded_filenames, uploaded_file_contents):
         return [html.Li(file_download_link(filename)) for filename in files]
 
 if __name__ == '__main__':
-    app.run()
-    #app.run_server(debug=True)
+    app.run_server(debug=True)

@@ -1,1 +1,1 @@
-web: gunicorn campina_ds_dash:app
+web: gunicorn campina_ds_dash:server
