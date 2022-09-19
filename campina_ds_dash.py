@@ -186,4 +186,5 @@ def update_output(uploaded_filenames, uploaded_file_contents):
         return [html.Li(file_download_link(filename)) for filename in files]
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run()
+    #app.run_server(debug=True)
