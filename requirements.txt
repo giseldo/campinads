@@ -1,0 +1,8 @@
+dash 
+plotly
+pandas
+numpy
+pysd
+docx2python
+docx2txt
+gunicorn

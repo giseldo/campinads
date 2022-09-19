@@ -12,6 +12,7 @@ import base64
 import datetime
 from urllib.parse import quote as urlquote
 from docx2python import docx2python
+import docx2txt
 
 app = Dash(__name__)
 
@@ -104,7 +105,7 @@ app.layout = html.Div(children=[
     html.Div([dcc.Graph(id='graf-development-software', figure=fig_development)]),
 ])
 
-import docx2txt
+
 @app.callback(
     Output(component_id="quantidade-telas-input", component_property="value"),
     Input(component_id='submit-doc', component_property="n_clicks")
