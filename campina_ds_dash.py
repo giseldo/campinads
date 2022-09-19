@@ -1,5 +1,3 @@
-from msilib.schema import Component
-from xml.dom.minidom import Childless
 from dash import Dash, html, dcc, Input, Output, State, dash_table
 import plotly.express as px
 import pandas as pd
