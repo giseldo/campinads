@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc, Input, Output, State, dash_table
 import plotly.express as px
+import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 import os
@@ -40,10 +41,11 @@ app.layout = html.Div(children=[
     html.Div('''O CampinaDS utiliza Dinâmica de Sistemas (DS), Machine Learning(ML) e Processamento de Linguagem Natural (PLN)) 
     para esse objetivo (reduzir custo, poupar tempo, de forma interpretável).'''),
     html.Br(),
-    html.Div('''O CampinaDS também utiliza o PySD que é uma biblioteca para executar modelos de DS em python
-    com o propósito de facilitar a integração com Big Data e ML no workflow do SD. O PySD traduz modelos 
-    Vensim ou XMILE para arquivos com código fonte em python, e disponibiliza métodos para modificar, 
-    simular e observar a execução dos modelos. '''),
+    html.Div('''by Giseldo'''),
+    #html.Div('''O CampinaDS também utiliza o PySD que é uma biblioteca para executar modelos de DS em python
+    #com o propósito de facilitar a integração com Big Data e ML no workflow do SD. O PySD traduz modelos 
+    #Vensim ou XMILE para arquivos com código fonte em python, e disponibiliza métodos para modificar, 
+    #simular e observar a execução dos modelos. '''),
     html.H2("Diagrama DS"),
     html.Img(src=img_name),
     html.Hr(),
@@ -103,9 +105,8 @@ app.layout = html.Div(children=[
     html.Div(id="data-entrega-input"),
     html.Hr(),
     html.H2(children="Conclusões - Gráficos"),
-    html.Div([dcc.Graph(id='graf-development-software', figure=fig_development)]),
+    html.Div([dcc.Graph(id='graf-development-software', figure=fig_development)]), 
 ])
-
 
 @app.callback(
     Output(component_id="quantidade-telas-input", component_property="value"),
