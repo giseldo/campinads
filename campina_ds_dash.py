@@ -13,20 +13,15 @@ from docx2python import docx2python
 import docx2txt
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
 app = Dash(__name__, external_stylesheets=external_stylesheets)
-
 server = app.server
-
 img_name = app.get_asset_url("ds.png")
-
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-model = pysd.read_vensim('modelo/brook_law.stmx')
-#model = pysd.load("v1.py")
-
+model =  pysd.read_xmile("modelo/brook_law.xmile")
+#model = pysd.load("modelo/brook_law.xmile.py")
 stocks = model.run()
-fig_development = px.scatter(stocks, y="development software")
+
+fig_development = px.scatter(stocks, y="developed software")
 
 app.layout = html.Div(children=[
     html.H1("CampinaDS - Um sistema de apoio à decisão baseado em modelagem e simulação"),
@@ -42,100 +37,67 @@ app.layout = html.Div(children=[
     para esse objetivo (reduzir custo, poupar tempo, de forma interpretável).'''),
     html.Br(),
     html.Div('''by Giseldo'''),
-    #html.Div('''O CampinaDS também utiliza o PySD que é uma biblioteca para executar modelos de DS em python
-    #com o propósito de facilitar a integração com Big Data e ML no workflow do SD. O PySD traduz modelos 
-    #Vensim ou XMILE para arquivos com código fonte em python, e disponibiliza métodos para modificar, 
-    #simular e observar a execução dos modelos. '''),
     html.H2("Diagrama DS"),
-    html.Img(src=img_name),
-    html.Hr(),
+    html.Img(src=img_name),html.Hr(),
     html.H2("Documentação"),
     html.P('''Carregue aqui toda  documentação do projeto. Exemplo: termo de abertura, 
     descrição dos casos de uso. A documentação auxilia no ajuste dos parâmetros'''), 
     html.P('''obs: somente o documento do tipo "prototipo de telas" está sendo compreendido e processado, ele conta 
     quantas imagens tem o documento e atualiza o parâmetro "quantidade de telas" (carregue um documento com várias imagens para teste)'''), 
-    html.Div(
-    [
-        dcc.Upload(
-            id="upload-data",
-            children=html.Div(
-                ["Drag and drop or click to select a file to upload."]
-            ),
-            style={
-                "width": "100%",
-                "height": "60px",
-                "lineHeight": "60px",
-                "borderWidth": "1px",
-                "borderStyle": "dashed",
-                "borderRadius": "5px",
-                "textAlign": "center",
-                "margin": "10px",
-            },
-            multiple=True,
-        ),
-        html.H4("Lista de arquivos"),
-        html.Ul(id="file-list"),
-    ],
-    style={"max-width": "500px"},
-    ),
+    html.Div([dcc.Upload(id="upload-data",children=html.Div(["Drag and drop or click to select a file to upload."]),
+            style={"width": "100%", "height": "60px","lineHeight": "60px","borderWidth": "1px","borderStyle": "dashed",
+                "borderRadius": "5px", "textAlign": "center", "margin": "10px",}, multiple=True,
+        ), html.H4("Lista de arquivos"), html.Ul(id="file-list"),],style={"max-width": "500px"},),
     html.Br(),
-    html.Button("Carregar documentação", id="submit-doc", n_clicks=0),
-    html.Hr(),
+    html.Button("Carregar documentação", id="submit-doc", n_clicks=0),  html.Hr(),
+    
     html.H2(children="Parametrização"),
     # nominal productivity
     html.P("Informe a produtividade nominal (nominal productivity):"),
-    dcc.Input(
-        id="nominal-productivity-input", 
-        type="text",
-        value=3),
-    html.Br(),
+    dcc.Input(id="nominal-productivity-input", type="text", value=0.1), html.Br(),
     # quantidade de telas
-    html.P("Informe a quantidade de telas:"),
-    dcc.Input(
-        id="quantidade-telas-input", 
-        type="text",
-        value=100),
-    html.Br(),
-    html.Br(),
+    html.P("Informe a quantidade de novos funcionários caso o projeto atrase:"),
+    dcc.Input(id="quantidade-new-personnel-input", type="text", value=0),
+    # submit
+    html.Br(), html.Br(),
     html.Button("Simular", id="submit-val", n_clicks=0),   
-    html.Br(),
-    html.Hr(),
+    html.Br(), html.Hr(),
+    # graficos e textos
     html.H2(children="Conclusões - Narrativas"),
     html.P("Quantidade de dias previsto para a finalização do projeto:"),
-    html.Div(id="data-entrega-input"),
-    html.Hr(),
+    html.Div(id="data-entrega-input"), html.Hr(),
     html.H2(children="Conclusões - Gráficos"),
     html.Div([dcc.Graph(id='graf-development-software', figure=fig_development)]), 
 ])
 
-@app.callback(
-    Output(component_id="quantidade-telas-input", component_property="value"),
-    Input(component_id='submit-doc', component_property="n_clicks")
-)
-def update_quantidade_tela(n_clicks):
-    if n_clicks>0:
-        files = []
-        for filename in os.listdir(UPLOAD_DIRECTORY):
-            path = os.path.join(UPLOAD_DIRECTORY, filename)
-            doc_result = docx2python(path)
-            count = 0
-            for key, value in doc_result.images.items():
-                count = count + 1
-        return count
-    else:
-        return 150
+#@app.callback(
+#    Output(component_id="quantidade-telas-input", component_property="value"),
+#    Input(component_id='submit-doc', component_property="n_clicks")
+#)
+#def update_quantidade_tela(n_clicks):
+#    if n_clicks>0:
+#        files = []
+#        for filename in os.listdir(UPLOAD_DIRECTORY):
+#            path = os.path.join(UPLOAD_DIRECTORY, filename)
+#            doc_result = docx2python(path)
+#            count = 0
+#            for key, value in doc_result.images.items():
+#                count = count + 1
+#        return count
+#    else:
+#        return 150
 
 @app.callback(
     Output(component_id="graf-development-software", component_property="figure"),
     Output(component_id="data-entrega-input", component_property="children"),
     Input(component_id="submit-val", component_property="n_clicks"),
     State('nominal-productivity-input', 'value'),
-    State('quantidade-telas-input', 'value')
+    State('quantidade-new-personnel-input', 'value')
 )
 def update_graph(n_clicks, input1, input2):
     stocks = model.run(params={
-        'nominal productivity':int(input1),
-        'quantidade de telas':int(input2)
+        "nominal productivity":float(input1),
+        "personnel new hire":int(input2)        
         })
     qtd_dias = 0
     count = 0
@@ -144,7 +106,7 @@ def update_graph(n_clicks, input1, input2):
         if i<0: 
             break
     qtd_dias = count
-    fig_development = px.scatter(stocks, y="development software")
+    fig_development = px.scatter(stocks, y="developed software")
     return fig_development, qtd_dias
 
 UPLOAD_DIRECTORY = "docs"
