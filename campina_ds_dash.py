@@ -39,17 +39,18 @@ app.layout = html.Div(children=[
     html.Div('''by Giseldo'''),
     html.H2("Diagrama DS"),
     html.Img(src=img_name),html.Hr(),
-    html.H2("Documentação"),
-    html.P('''Carregue aqui toda  documentação do projeto. Exemplo: termo de abertura, 
-    descrição dos casos de uso. A documentação auxilia no ajuste dos parâmetros'''), 
-    html.P('''obs: somente o documento do tipo "prototipo de telas" está sendo compreendido e processado, ele conta 
-    quantas imagens tem o documento e atualiza o parâmetro "quantidade de telas" (carregue um documento com várias imagens para teste)'''), 
-    html.Div([dcc.Upload(id="upload-data",children=html.Div(["Drag and drop or click to select a file to upload."]),
-            style={"width": "100%", "height": "60px","lineHeight": "60px","borderWidth": "1px","borderStyle": "dashed",
-                "borderRadius": "5px", "textAlign": "center", "margin": "10px",}, multiple=True,
-        ), html.H4("Lista de arquivos"), html.Ul(id="file-list"),],style={"max-width": "500px"},),
-    html.Br(),
-    html.Button("Carregar documentação", id="submit-doc", n_clicks=0),  html.Hr(),
+    
+    #html.H2("Documentação"),
+    #html.P('''Carregue aqui toda  documentação do projeto. Exemplo: termo de abertura, 
+    #descrição dos casos de uso. A documentação auxilia no ajuste dos parâmetros'''), 
+    #html.P('''obs: somente o documento do tipo "prototipo de telas" está sendo compreendido e processado, ele conta 
+    #quantas imagens tem o documento e atualiza o parâmetro "quantidade de telas" (carregue um documento com várias imagens para teste)'''), 
+    #html.Div([dcc.Upload(id="upload-data",children=html.Div(["Drag and drop or click to select a file to upload."]),
+    #        style={"width": "100%", "height": "60px","lineHeight": "60px","borderWidth": "1px","borderStyle": "dashed",
+    #            "borderRadius": "5px", "textAlign": "center", "margin": "10px",}, multiple=True,
+    #    ), html.H4("Lista de arquivos"), html.Ul(id="file-list"),],style={"max-width": "500px"},),
+    #html.Br(),
+    #html.Button("Carregar documentação", id="submit-doc", n_clicks=0),  html.Hr(),
     
     html.H2(children="Parametrização"),
     # nominal productivity
@@ -135,22 +136,22 @@ def file_download_link(filename):
         html.A(filename, href=location),
         html.P("Documento identificado como um Protótipo de Tela")
     ])
-@app.callback(
-    Output("file-list", "children"),
-    [Input("upload-data", "filename"), Input("upload-data", "contents")],
-)
-def update_output(uploaded_filenames, uploaded_file_contents):
-    """Save uploaded files and regenerate the file list."""
 
-    if uploaded_filenames is not None and uploaded_file_contents is not None:
-        for name, data in zip(uploaded_filenames, uploaded_file_contents):
-            save_file(name, data)
 
-    files = uploaded_files()
-    if len(files) == 0:
-        return [html.Li("Sem arquivos carregados!")]
-    else:
-        return [html.Li(file_download_link(filename)) for filename in files]
+#@app.callback(
+#    Output("file-list", "children"),
+#    [Input("upload-data", "filename"), Input("upload-data", "contents")],
+#)
+#def update_output(uploaded_filenames, uploaded_file_contents):
+#    """Save uploaded files and regenerate the file list."""
+#    if uploaded_filenames is not None and uploaded_file_contents is not None:
+#        for name, data in zip(uploaded_filenames, uploaded_file_contents):
+#           save_file(name, data)
+#    files = uploaded_files()
+#    if len(files) == 0:
+#        return [html.Li("Sem arquivos carregados!")]
+#    else:
+#        return [html.Li(file_download_link(filename)) for filename in files]
 
 if __name__ == '__main__':
     app.run_server(debug=True)
