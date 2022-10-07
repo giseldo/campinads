@@ -6,4 +6,5 @@ pysd
 docx2python
 docx2txt
 gunicorn
+netCDF4
 dash-bootstrap-components
