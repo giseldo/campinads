@@ -22,7 +22,7 @@ img_name = app.get_asset_url("ds.png")
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-model = pysd.read_vensim('v1.mdl')
+model = pysd.read_vensim('modelo/brook_law.stmx')
 #model = pysd.load("v1.py")
 
 stocks = model.run()

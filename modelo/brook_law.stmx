@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
+	<header>
+		<smile version="1.0" namespace="std, isee"/>
+		<name>brook_law</name>
+		<uuid>c0a1dcea-fff5-47ad-86e0-344b0fd7dc38</uuid>
+		<vendor>isee systems, inc.</vendor>
+		<product version="1.5.2" isee:build_number="1334" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+	</header>
+	<sim_specs isee:simulation_delay="0.00374065" method="Euler" time_units="Months" isee:instantaneous_flows="false">
+		<start>0</start>
+		<stop>400</stop>
+		<dt reciprocal="true">4</dt>
+	</sim_specs>
+	<isee:prefs show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" saved_runs="5" keep="false" rifp="true"/>
+	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" observer_start_page="home_page" enabled="false"/>
+	<model_units/>
+	<model>
+		<variables>
+			<stock name="requirements">
+				<eqn>500</eqn>
+				<outflow>software_development_rate</outflow>
+				<non_negative/>
+			</stock>
+			<stock name="developed software">
+				<eqn>0</eqn>
+				<inflow>software_development_rate</inflow>
+				<non_negative/>
+			</stock>
+			<stock name="new personnel">
+				<eqn>0</eqn>
+				<inflow>personnel_alocation_rate</inflow>
+				<outflow>assimilation_rate</outflow>
+				<non_negative/>
+			</stock>
+			<stock name="experienced personnel">
+				<eqn>20</eqn>
+				<inflow>assimilation_rate</inflow>
+				<non_negative/>
+			</stock>
+			<aux name="nominal productivity">
+				<eqn>0.1</eqn>
+			</aux>
+			<aux name="experienced personnel needed for training">
+				<eqn>new_personnel*training_overhead_FTE_experienced/100</eqn>
+			</aux>
+			<aux name="communication overhead">
+				<eqn>((experienced_personnel+new_personnel))</eqn>
+				<gf type="extrapolate">
+					<xscale min="0" max="30"/>
+					<yscale min="0" max="54"/>
+					<ypts>0,1.5,6,13.5,24,37.5,54</ypts>
+				</gf>
+			</aux>
+			<aux name="training overhead\nFTE experienced">
+				<eqn>25</eqn>
+			</aux>
+			<aux name="planned software">
+				<eqn>TIME</eqn>
+				<gf type="extrapolate">
+					<xscale min="0" max="200"/>
+					<yscale min="0" max="500"/>
+					<ypts>0,50,100,150,200,250,300,350,400,450,500</ypts>
+				</gf>
+			</aux>
+			<flow name="personnel alocation rate">
+				<eqn>IF((developed_software-planned_software) &lt; -75 AND TIME&lt;112) THEN 10  ELSE 0</eqn>
+				<non_negative/>
+			</flow>
+			<flow name="assimilation rate">
+				<eqn>new_personnel/20</eqn>
+				<non_negative/>
+			</flow>
+			<flow name="software development rate">
+				<eqn>nominal_productivity*(1-communication_overhead/100)*(0.8*new_personnel+1.2*(experienced_personnel-experienced_personnel_needed_for_training))</eqn>
+				<non_negative/>
+			</flow>
+			<aux name="qunatidade de pessoas">
+				<eqn>new_personnel+experienced_personnel</eqn>
+			</aux>
+			<isee:dependencies>
+				<var name="experienced_personnel_needed_for_training">
+					<in>new_personnel</in>
+					<in>training_overhead_FTE_experienced</in>
+				</var>
+				<var name="communication_overhead">
+					<in>new_personnel</in>
+					<in>experienced_personnel</in>
+				</var>
+				<var name="personnel_alocation_rate">
+					<in>planned_software</in>
+					<in>developed_software</in>
+				</var>
+				<var name="assimilation_rate">
+					<in>new_personnel</in>
+				</var>
+				<var name="software_development_rate">
+					<in>nominal_productivity</in>
+					<in>experienced_personnel_needed_for_training</in>
+					<in>communication_overhead</in>
+					<in>new_personnel</in>
+					<in>experienced_personnel</in>
+				</var>
+				<var name="qunatidade_de_pessoas">
+					<in>new_personnel</in>
+					<in>experienced_personnel</in>
+				</var>
+			</isee:dependencies>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="blue" background="white" font_size="9pt" isee:transparent="false"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" isee:report_month_names="false" interval="1" report_balances="beginning" report_flows="summed"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" transparent="false" corner_radius="0" isee:flat="false" icon_side="top"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" popup_background_color="#FFFECF"/>
+				<slider color="black" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:always_show_hover_tip="false" input_expands="true" input_width="100"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+			</style>
+			<view isee:show_pages="false" page_width="1123" page_height="793" isee:page_cols="2" zoom="140" isee:popup_graphs_are_comparative="true" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="55" height="45"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="9pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="blue" background="white" font_size="9pt" isee:transparent="false"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" isee:report_month_names="false" interval="1" report_balances="beginning" report_flows="summed"/>
+				</style>
+				<stock x="96" y="138" name="requirements"/>
+				<stock x="302" y="138" name="developed software"/>
+				<stock x="141" y="402" name="new personnel"/>
+				<stock x="391" y="402" name="experienced personnel"/>
+				<aux x="74" y="242" name="nominal productivity"/>
+				<aux x="213" y="293" name="experienced personnel needed for training"/>
+				<aux x="321" y="205" name="communication overhead"/>
+				<aux x="422.5" y="271" name="training overhead\nFTE experienced"/>
+				<aux x="59.25" y="526" name="planned software"/>
+				<flow x="77.25" y="401" name="personnel alocation rate">
+					<pts>
+						<pt x="36" y="401"/>
+						<pt x="118.5" y="401"/>
+					</pts>
+				</flow>
+				<flow x="260" y="402" name="assimilation rate">
+					<pts>
+						<pt x="163.5" y="402"/>
+						<pt x="368.5" y="402"/>
+					</pts>
+				</flow>
+				<flow x="193" y="138" name="software development rate">
+					<pts>
+						<pt x="118.5" y="138"/>
+						<pt x="279.5" y="138"/>
+					</pts>
+				</flow>
+				<connector uid="1" angle="41.1518">
+					<from>nominal_productivity</from>
+					<to>software_development_rate</to>
+				</connector>
+				<connector uid="2" angle="97.3524">
+					<from>experienced_personnel_needed_for_training</from>
+					<to>software_development_rate</to>
+				</connector>
+				<connector uid="3" angle="152.371">
+					<from>communication_overhead</from>
+					<to>software_development_rate</to>
+				</connector>
+				<connector uid="4" angle="56.5532">
+					<from>new_personnel</from>
+					<to>experienced_personnel_needed_for_training</to>
+				</connector>
+				<connector uid="5" angle="78.8571">
+					<from>new_personnel</from>
+					<to>software_development_rate</to>
+				</connector>
+				<connector uid="6" angle="38.991">
+					<from>new_personnel</from>
+					<to>communication_overhead</to>
+				</connector>
+				<connector uid="7" angle="185.995">
+					<from>training_overhead_FTE_experienced</from>
+					<to>experienced_personnel_needed_for_training</to>
+				</connector>
+				<connector uid="8" angle="126.87">
+					<from>experienced_personnel</from>
+					<to>software_development_rate</to>
+				</connector>
+				<connector uid="9" angle="105.945">
+					<from>experienced_personnel</from>
+					<to>communication_overhead</to>
+				</connector>
+				<connector uid="10" angle="81.8057">
+					<from>planned_software</from>
+					<to>personnel_alocation_rate</to>
+				</connector>
+				<connector uid="11" angle="322.696">
+					<from>new_personnel</from>
+					<to>assimilation_rate</to>
+				</connector>
+				<connector uid="12" angle="345.379">
+					<from>developed_software</from>
+					<to>personnel_alocation_rate</to>
+				</connector>
+				<stacked_container uid="13" x="677.238" y="148.524">
+					<graph x="502.238" y="23.524" width="350" height="250" comparative="true" type="time_series" show_grid="false" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="Graph" isee:fill_intensity="0.1" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" pen_width="1" index="0" show_y_axis="true">
+							<entity name="software_development_rate"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="14" x="497.238" y="311.428" width="350" height="250">
+					<graph x="497.238" y="311.428" width="350" height="250" comparative="true" type="time_series" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="Graph" isee:fill_intensity="0.1" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" pen_width="1" index="0" show_y_axis="true">
+							<entity name="qunatidade_de_pessoas"/>
+							<scale min="0" max="30"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux x="242" y="490" name="qunatidade de pessoas"/>
+				<connector uid="15" angle="315.67">
+					<from>new_personnel</from>
+					<to>qunatidade_de_pessoas</to>
+				</connector>
+				<connector uid="16" angle="195.444">
+					<from>experienced_personnel</from>
+					<to>qunatidade_de_pessoas</to>
+				</connector>
+				<stacked_container uid="17" x="892.857" y="18.5241" width="350" height="250">
+					<graph x="892.857" y="18.5241" width="350" height="250" comparative="true" type="time_series" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="Graph" isee:fill_intensity="0.1" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" pen_width="1" index="0" show_y_axis="true">
+							<entity name="developed_software"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="18" x="885" y="317.143" width="350" height="250">
+					<graph x="885" y="317.143" width="350" height="250" comparative="true" type="time_series" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="Graph" isee:fill_intensity="0.1" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" pen_width="1" index="0" show_y_axis="true">
+							<entity name="requirements"/>
+						</plot>
+					</graph>
+				</stacked_container>
+			</view>
+		</views>
+	</model>
+</xmile>
+
