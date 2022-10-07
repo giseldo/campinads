@@ -6,3 +6,4 @@ pysd
 docx2python
 docx2txt
 gunicorn
+dash-bootstrap-components

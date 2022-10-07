@@ -182,9 +182,9 @@ def assimilation_rate():
         "requirements": 1,
         "new_personnel": 1,
         "experienced_personnel_needed_for_training": 1,
-        "experienced_personnel": 1,
         "nominal_productivity": 1,
         "communication_overhead": 1,
+        "experienced_personnel": 1,
     },
 )
 def software_development_rate():
